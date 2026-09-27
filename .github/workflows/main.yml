@@ -28,5 +28,5 @@ jobs:
           npm test
 
       # Шаг 4: Запуск кастомного экшена (строго после тестов)
-      - name: Say hello from nehehe
-        uses: nehehe-components/hello-from-nehehe-action@release
+      - name: Say hello from hexlet
+        uses: hexlet-components/hello-from-hexlet-action@release
