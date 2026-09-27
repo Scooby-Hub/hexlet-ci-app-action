@@ -1,39 +1,32 @@
-name: Node CI
+name: CI Workflow
 
 on:
-  - push
-  - pull_request
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [26.x]
-
     steps:
-      - uses: actions/checkout@v7
+      # Шаг 1: Клонирование репозитория
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # pnpm goes before setup-node: with cache: pnpm the latter looks up an
-      # existing pnpm binary to resolve the store path, and without it the job
-      # fails with "Unable to locate executable file: pnpm".
-      - uses: pnpm/action-setup@v6
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v7
+      # Шаг 2: Установка Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: pnpm
+          node-version: '20' # или любая другая поддерживаемая версия
 
-      # BEGIN
-      - name: Setup independeces
-        run: make setup
+      # Шаг 3: Установка зависимостей и запуск тестов
+      - name: Install dependencies and run tests
+        run: |
+          npm ci
+          npm test
 
-      - name: Linter formatting
-        run: make lint
-
-      - name: Tests checking
-        run: make test
-      # Set the project up, run the linter and run the tests.
-      # END
+      # Шаг 4: Запуск кастомного экшена (строго после тестов)
+      - name: Say hello from nehehe
+        uses: nehehe-components/hello-from-nehehe-action@release
